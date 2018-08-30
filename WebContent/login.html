@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="shortcut icon" href="img/ico.png" type="image/x-icon" />
+<title>FlyDragonLock</title>
+
+<link href="css/bootstrap.css" rel="stylesheet">
+<script src="js/jquery-3.2.1.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/my.js"></script>
+</head>
+<body>
+	<div class="container" style="min-width: 260px">
+
+		<div class="panel panel-default" style="margin-top: 100px;">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<img src="img/ico.png" class="img-circle" style="width: 35px;" />
+					FlyDragonLock
+				</h3>
+			</div>
+			<div class="panel-body">
+				<!--
+              	作者：251121753@qq.com
+              	时间：2017-12-19
+              	描述：管理员登录时用的表单
+              -->
+				<form name="loginForm" action="login.action" method="post">
+					<div class="form-group">
+						<label for="exampleInputEmail1">用户名</label> <input name="userName"
+							type="text" class="form-control" id="exampleInputEmail1"
+							placeholder="用户名">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword1">验证码</label> <input
+							name="userCode" type="password" class="form-control"
+							id="exampleInputPassword1" placeholder="验证码">
+					</div>
+					<div class="row">
+						<div class="col-xs-12 col-lg-12 col-sm-12 col-md-10"
+							style="float: right;">
+							<button type="submit" class="btn btn-primary"
+								style="float: right;">开始登录</button>
+							<button id="code" type="button"
+								class="btn btn-warning data-container="body" data-toggle="popover" data-placement="left"
+								data-content="验证码已经发送，请您时登录，1分钟内有效"
+								style="float: right;margin-right: 20px"
+								onclick="getValidateCode()">获取验证码</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

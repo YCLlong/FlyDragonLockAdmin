@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.ycl.model.FileMangerMapper">
+	<sql id="condition">
+		<if test="sender!=null and sender!=''">
+			and sender=#{sender}
+		</if>
+		<if test="receiver!=null and receiver!=''">
+			and receiver=#{receiver}
+		</if>
+		<if test="ip!=null and ip!=''">
+			and sendip=#{ip}
+		</if>
+		<if test="startTime!=null and startTime!=''">
+			and senddate  &gt;= #{startTime}
+		</if>
+		<if test="endTime!=null and endTime!=''">
+			and senddate  &lt;= #{endTime}
+		</if>
+	</sql>
+	
+	<sql id="fy">
+		<if test="currentPage!=null and currentPage>0">
+			LIMIT #{startPage},#{pageSize}
+		</if>
+	</sql>
+	
+	<select id="queryFileTransfer" parameterType="cn.ycl.vo.FileMangerQueryVo" resultType="cn.ycl.entity.Send">
+		SELECT * FROM send
+		<where>
+			<include refid="condition"></include>
+		</where>
+		order by senddate desc
+		<include refid="fy"></include>
+	</select>
+	
+	<select id="queryFileCount" parameterType="cn.ycl.vo.FileMangerQueryVo" resultType="Long">
+		SELECT COUNT(*) FROM send
+		<where>
+			<include refid="condition"></include>
+		</where>
+	</select>
+</mapper>

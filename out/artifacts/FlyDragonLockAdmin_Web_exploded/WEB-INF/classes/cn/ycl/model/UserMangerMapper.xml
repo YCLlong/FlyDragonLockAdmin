@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.ycl.model.UserMangerMapper">
+	<sql id="queryCondition">
+		<if test="qq!=null and qq!=''">
+			and u.email = #{qq}
+		</if>
+	</sql>
+	<sql id="fy">
+		<if test="currentPage!=null and currentPage>0">
+			LIMIT #{startPage},#{pageSize}
+		</if>
+	</sql>
+	<!-- 在线用户 -->
+	<select id="onLineUser" parameterType="cn.ycl.vo.UserMangerQueryVo" resultType="cn.ycl.entity.TbUserManger">
+		SELECT u.email as qq,u.imei,o.ip
+		FROM user u INNER JOIN online o
+		ON u.email = o.qq
+		<include refid="queryCondition"></include>
+		<include refid="fy"></include>
+	</select>
+	
+	<!-- 离线用户 -->
+	<select id="offLineUser" parameterType="cn.ycl.vo.UserMangerQueryVo" resultType="cn.ycl.entity.TbUserManger">
+		SELECT u.email as qq,u.imei
+		FROM user u
+		WHERE u.email not in(SELECT qq FROM online)
+		<include refid="queryCondition"></include>
+		<include refid="fy"></include>
+	</select>
+	
+	<!-- 所有用户 -->
+	<select id="allUser" parameterType="cn.ycl.vo.UserMangerQueryVo" resultType="cn.ycl.entity.TbUserManger">
+		SELECT u.email as qq,u.imei,o.ip
+		FROM user u LEFT JOIN online o
+		ON u.email = o.qq
+		<include refid="queryCondition"></include>
+		<include refid="fy"></include>
+	</select>	
+	
+	<!-- 查询在线数量 -->
+	<select id="getOnlineCount" resultType="int">
+		select count(*)
+		FROM user u INNER JOIN online o
+		ON u.email = o.qq
+		<include refid="queryCondition"></include>
+	</select>
+	
+	<!-- 查询离线数量 -->
+	<select id="getOffLineCount" resultType="int">
+		select count(*)
+		FROM user u
+		WHERE u.email not in(SELECT qq FROM online)
+	</select>
+	
+	<!-- 查询所有数量 -->
+	<select id="getAllCount" resultType="int">
+		select count(*)
+		FROM user u LEFT JOIN online o
+		ON u.email = o.qq
+		<include refid="queryCondition"></include>
+	</select>
+	
+	<!-- 加入黑名单 -->
+	<insert id="addToBlackList" parameterType="java.lang.String" >
+        insert into blacklist (ip)
+        values (#{ip,jdbcType=VARCHAR})
+    </insert>
+    
+    <!-- 从黑名单移除 -->
+    <delete id="deleteFromBlackList" parameterType="java.lang.String" >
+        delete from blacklist
+        where ip = #{ip,jdbcType=VARCHAR}
+    </delete>
+    
+    <!-- 删除用户 -->
+     <delete id="deleteUser" parameterType="java.lang.String" >
+        delete from user
+         where email = #{qq,jdbcType=VARCHAR}
+    </delete>
+    
+    <!-- 判断用户是否时黑名单用户 -->
+    <select id="isBlackListUser" parameterType="java.lang.String" resultType="int">
+    	SELECT count(*) from blacklist WHERE ip =#{ip}
+    </select>
+    
+    <!-- 强制下线 -->
+    <insert id="byebye" parameterType="java.lang.String" >
+        insert into byebye (ip)
+        values (#{ip,jdbcType=VARCHAR})
+    </insert>
+</mapper>

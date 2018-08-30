@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"  
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"  
+    xmlns:task="http://www.springframework.org/schema/task" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd   
+        http://www.springframework.org/schema/mvc   
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd   
+        http://www.springframework.org/schema/context   
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd   
+        http://www.springframework.org/schema/aop   
+        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd   
+        http://www.springframework.org/schema/tx   
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd  
+        http://www.springframework.org/schema/task  
+        http://www.springframework.org/schema/task/spring-task-4.0.xsd  
+        http://code.alibabatech.com/schema/dubbo          
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">  
+  
+    <!-- srping框架 配置文件 用于管理数据库连接池 -->  
+    <!-- 配置 读取properties文件 db.properties -->  
+    <context:property-placeholder location="classpath:jdbc.properties"/>  
+    <!-- 配置 数据源 c3p0 -->  
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">  
+        <property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+	    <property name="driverClass" value="${jdbc.driverClass}"></property>
+	    <property name="user" value="${jdbc.user}"></property>
+	    <property name="password" value="${jdbc.password}"></property>
+    </bean>  
+    
+    <!-- 配置 Mybatis的工厂 -->  
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">  
+        <!-- 绑定数据源 -->  
+        <property name="dataSource" ref="dataSource" />  
+        <!-- 配置Mybatis的核心 配置文件所在位置 -->  
+        <property name="configLocation" value="classpath:SqlMapConfig.xml" />  
+        <!-- 批量定义别名 -->  
+        <property name="typeAliasesPackage" value="cn.ycl.entity" />  
+    </bean>  
+      
+    <!--扫描mapper接口，使用mapper代理创建接口实现类-->  
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+        <property name="basePackage" value="cn.ycl.model" />  
+    </bean>  
+    
+     <!-- 配置扫描包 扫描 @Service    spring代理管理业务层 -->  
+    <context:component-scan base-package="cn.ycl.service.impl" />  
+      
+</beans>  

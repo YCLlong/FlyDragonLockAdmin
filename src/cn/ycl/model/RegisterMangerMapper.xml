@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.ycl.model.RegisterMangerMapper">
+	<sql id="condition">
+		<where>
+			<if test="qq!=null and qq!=''">
+				and email = #{qq}
+			</if>
+			<if test="imei!=null and imei!=''">
+				and imei=#{imei}
+			</if>
+			<if test="startTime!=null and startTime!=''">
+				and time  &gt;= #{startTime}
+			</if>
+			<if test="endTime!=null and endTime!=''">
+				and time  &lt;= #{endTime}
+			</if>
+		</where>
+	</sql>
+		
+	<sql id="fy">
+		<if test="currentPage!=null and currentPage>0">
+			LIMIT #{startPage},#{pageSize}
+		</if>
+	</sql>
+	
+	<select id="queryRegister" parameterType="cn.ycl.vo.RegisterMangerQueryVo" resultType="cn.ycl.entity.Register">
+		SELECT * FROM register
+		<include refid="condition"></include>
+		<include refid="fy"></include>
+	</select>
+	
+	<select id="queryRegisterCount" parameterType="cn.ycl.vo.RegisterMangerQueryVo" resultType="long">
+		SELECT COUNT(*) FROM register
+		<include refid="condition"></include>
+	</select>
+</mapper>
